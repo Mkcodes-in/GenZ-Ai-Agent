@@ -1,9 +1,13 @@
 import { LayoutDashboardIcon } from 'lucide-react'
 import Dashboard from '../UI/Data/Dashboard'
 import React from 'react'
-import Modes from './Data/Modes'
+import useThemeStore from '../../store/ThemeStore'
+import useModesStore from '../../store/ModesStore'
 
-export default function RightSide({ theme, activeItem }) {
+export default function RightSide() {
+  const theme = useThemeStore(state => state.theme);
+  const { active, Modes } = useModesStore();
+  const activeItem = Modes.find((m) => m.id === active) || {};
   
   return (
     <div className={`flex flex-col h-screen w-full border-l ${theme ? 'border-gray-700 bg-gray-900/90' : 'border-gray-200 bg-white/95'} backdrop-blur-sm overflow-y-auto`}>
@@ -18,8 +22,8 @@ export default function RightSide({ theme, activeItem }) {
       {/* Stats Cards */}
       <div className='p-6 grid grid-cols-2 gap-3'>
         {Dashboard.map(item => (
-          <div 
-            key={item.id} 
+          <div
+            key={item.id}
             className={`p-4 rounded-xl border ${theme ? 'border-gray-700 bg-gray-800/50 hover:shadow-lg' : 'border-gray-200/70 bg-white hover:shadow-sm'} transition-shadow`}
           >
             <div className={`flex items-center gap-2 ${theme ? 'text-gray-400' : 'text-gray-500'} mb-1`}>
@@ -28,7 +32,7 @@ export default function RightSide({ theme, activeItem }) {
             </div>
             <div className={`text-md font-bold ${theme ? 'text-white' : 'text-gray-800'}`}>{item.number}</div>
           </div>
-        ))} 
+        ))}
       </div>
 
       {/* Mode Usage Section */}
@@ -51,11 +55,10 @@ export default function RightSide({ theme, activeItem }) {
               <div className={`w-full rounded-full h-1.5 ${theme ? 'bg-gray-700' : 'bg-gray-200'}`}>
                 {mode.id === activeItem?.id ? (
                   <div
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      parseInt(mode.percent) > 70 ? (theme ? 'bg-green-400' : 'bg-green-500') :
-                      parseInt(mode.percent) > 30 ? (theme ? 'bg-yellow-400' : 'bg-yellow-500') :
-                      (theme ? 'bg-red-400' : 'bg-red-500')
-                    }`}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${parseInt(mode.percent) > 70 ? (theme ? 'bg-green-400' : 'bg-green-500') :
+                        parseInt(mode.percent) > 30 ? (theme ? 'bg-yellow-400' : 'bg-yellow-500') :
+                          (theme ? 'bg-red-400' : 'bg-red-500')
+                      }`}
                     style={{ width: mode.percent }}
                   ></div>
                 ) : (

@@ -1,8 +1,17 @@
 import React from 'react'
 import { ArrowRight, InfoIcon, ZapIcon } from 'lucide-react'
-import Modes from '../UI/Data/Modes'
+import useThemeStore from '../../store/ThemeStore';
+import useModesStore from '../../store/ModesStore';
 
-export default function LeftSide({ active, handleActive, theme }) {
+export default function LeftSide() {
+    const theme = useThemeStore(state => state.theme);
+    const closeMobileMenu = useThemeStore(state => state.setMobileMenuOpen);
+    const {active, setActive, Modes } = useModesStore();
+
+    const handleClick = (id) => {
+    setActive(id);
+    closeMobileMenu(false);
+  };
     return (
         <div className={`w-full h-screen flex flex-col border-r ${theme ? 'border-gray-700 bg-gray-900/90' : 'border-gray-200 bg-white/95'} backdrop-blur-sm overflow-y-auto`}>
             {/* Header */}
@@ -25,7 +34,7 @@ export default function LeftSide({ active, handleActive, theme }) {
                     <div className="space-y-2">
                         {Modes.map(item => (
                             <button
-                                onClick={() => handleActive(item.id)}
+                                onClick={() => handleClick(item.id)}
                                 key={item.id}
                                 className={`flex items-center gap-3 w-full px-3 py-3 rounded-xl transition-all duration-200 group cursor-pointer
                                 ${theme ? 

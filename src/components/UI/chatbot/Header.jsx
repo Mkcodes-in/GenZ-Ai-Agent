@@ -7,15 +7,17 @@ import {
     Menu
 } from 'lucide-react'
 import React from 'react'
+import useThemeStore from '../../../store/ThemeStore';
+import useModesStore from '../../../store/ModesStore';
 
-export default function Header({
-    activeDes,
-    activeText,
-    activeIcon,
-    handleTheme,
-    theme,
-    toggleMobileMenu
-}) {
+export default function Header() {
+    const toggleMobileMenu = useThemeStore(state => state.toggleMobileMenu);
+    const toggleTheme = useThemeStore(state => state.toggleTheme);
+    const theme = useThemeStore(state => state.theme);
+    const { active, Modes } = useModesStore();
+    const activeItem = Modes.find((m) => m.id === active) || {};
+
+
     return (
         <header className={`sticky top-0 z-30 ${theme ? "bg-gray-900/90 border-gray-700" : "bg-white/90 border-gray-200"} backdrop-blur-sm border-b transition-colors duration-300`}>
             <nav className='px-6 py-4 flex items-center justify-between'>
@@ -28,14 +30,14 @@ export default function Header({
                         <Menu size={20} />
                     </button>
                     <div className={`p-2 rounded-lg ${theme ? "bg-gray-200/20" : "bg-blue-200/20 text-blue-600"} transition-colors`}>
-                        {activeIcon}
+                        {activeItem.icon}
                     </div>
                     <div>
                         <h1 className={`text-lg font-semibold ${theme ? "text-white" : "text-gray-800"} transition-colors`}>
-                            {activeText} Assistant
+                            {activeItem.text} Assistant
                         </h1>
                         <p className={`hidden sm:block text-sm ${theme ? "text-gray-400" : "text-gray-600"} transition-colors`}>
-                            {activeDes}
+                            {activeItem.des}
                         </p>
                     </div>
                 </div>
@@ -43,7 +45,7 @@ export default function Header({
                 {/* Right Side */}
                 <div className='flex items-center gap-1'>
                     <button
-                        onClick={handleTheme}
+                        onClick={toggleTheme}
                         className={`p-2 rounded-lg ${theme ? "hover:bg-gray-700 text-gray-300 hover:text-blue-400" : "hover:bg-gray-100 text-gray-600 hover:text-blue-600"} transition-colors cursor-pointer`}
                     >
                         {theme ? <Moon size={20} /> : <Sun size={20} />}
