@@ -1,32 +1,36 @@
 import { create } from "zustand";
-import useModesStore from "./ModesStore";
-  
-const useChatStore = create((set, get) => ({
+import { immer } from "zustand/middleware/immer";
+import useModesStore from './ModesStore';
+
+const useChatStore = create(immer((set) => ({
   message: "",
-  messages: [],
+  messages: {
+    1: [], 
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+  },
 
   setMessage: (newMessage) => set({ message: newMessage }),
 
   sendMessage: () => {
-    const state = get();
-    const msg = state.message.trim();
+    set((state) => {
+      const msg = state.message.trim();
+      if (!msg) return;
 
-    if (!msg) return;
-
-    const active = useModesStore.getState().active;
-    const userMsg = {
-      role: "user",
-      content: msg,
-      mode: active,
-    };
-
-    console.log("Message sent to:", userMsg);
-
-    return set({
-      messages: [...state.messages, userMsg],
-      message: "",
+      const active = useModesStore.getState().active;
+      const userMsg = {
+        role: "user",
+        content: msg,
+        timestamp: Date.now(),
+      };
+      
+      state.messages[active] = [...(state.messages[active] || []), userMsg].slice(-100);
+      state.message = "";
     });
   },
-}));
+})));
 
 export default useChatStore;

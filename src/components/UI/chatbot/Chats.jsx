@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Animation from '../../Animation'
 import useThemeStore from '../../../store/ThemeStore';
 import useModesStore from '../../../store/ModesStore';
@@ -10,7 +10,9 @@ export default function Chats() {
   const { active, Modes } = useModesStore();
   const activeItem = Modes.find((itm) => itm.id === active);
   const handleCurrentText = useModesStore(state => state.handleCurrentText);
-  const messages = useChatStore(state => state.messages);
+  const allMessages = useChatStore((s) => s.messages);
+  const messages = useMemo(() => allMessages[active] || [], [allMessages, active]);
+
 
   return (
     <div className={`flex flex-col h-full ${theme ? 'bg-gray-900' : 'bg-white'}`}>
